@@ -18,17 +18,15 @@ app.use(express.static('public'));
 
 // Nodemailer transporter (secure for production)
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
     secure: false,
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    },
-    tls: {
-        rejectUnauthorized: false
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
     }
 });
+
 
 // Contact form endpoint
 app.post('/api/contact', async (req, res) => {
@@ -55,27 +53,40 @@ app.post('/api/contact', async (req, res) => {
 
     try {
         // Email to portfolio owner
+        const VERIFIED_SENDER = 'divyanshu.jam100@gmail.com';
+
         const mailOptionsToOwner = {
-            from: process.env.EMAIL_USER,
-            to: 'divyanshu.jam100@gmail.com',
-            subject: `Portfolio Contact: ${subject}`,
-            html: `<h2>New Contact Form Submission</h2>
-                   <p><strong>Name:</strong> ${name}</p>
-                   <p><strong>Email:</strong> ${email}</p>
-                   <p><strong>Subject:</strong> ${subject}</p>
-                   <p><strong>Message:</strong></p><p>${message}</p>`
+            from: `"DIVYANSHU THAKUR" <${VERIFIED_SENDER}>`,
+            to: VERIFIED_SENDER,
+            subject: `New Portfolio Message: ${subject}`,
+            html: `
+                <h2>New Contact Form Submission</h2>
+                <p><strong>Name:</strong> ${name}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Subject:</strong> ${subject}</p>
+                <p><strong>Message:</strong></p>
+                <p>${message}</p>
+            `
         };
 
         // Confirmation email to sender
         const mailOptionsToSender = {
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: 'Thank you for contacting me!',
-            html: `<h2>Thank you for reaching out!</h2>
-                   <p>Hi ${name},</p>
-                   <p>I've received your message and will get back to you as soon as possible.</p>
-                   <p><strong>Your message:</strong></p><p>${message}</p>`
-        };
+        from: `"DIVYANSHU THAKUR" <${VERIFIED_SENDER}>`,
+        to: email,
+        subject: 'Thank you for reaching out!',
+        html: `
+            <p>Hi ${name},</p>
+
+            <p>I've received your message and will get back to you as soon as possible.</p>
+
+            <p><strong>Your message:</strong></p>
+            <p>${message}</p>
+
+            <br>
+            <p>Best regards,</p>
+            <p><strong>Divyanshu Thakur</strong></p>
+        `
+    };
 
         // Send emails but catch individual errors
         try {
