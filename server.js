@@ -8,8 +8,34 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
+// Middleware - CORS Configuration
+const allowedOrigins = [
+    'http://localhost:5000',
+    'http://127.0.0.1:5000',
+    'https://divyanshu0806.github.io',
+    'https://my-portfolio-production-5ad8.up.railway.app', // Your Railway frontend
+    'https://your-custom-domain.com' // Add your custom domain if you have one
+];
+
+app.use(cors({
+    origin: function(origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Accept'],
+    credentials: true
+}));
+
+// Handle preflight requests
+app.options('*', cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
