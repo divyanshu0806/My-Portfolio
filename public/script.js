@@ -33,7 +33,7 @@
             };
 
             try {
-                const response = await fetch('my-portfolio-production-5ad8.up.railway.app/api/contact', {
+                const response = await fetch('https://my-portfolio-production-5ad8.up.railway.app/api/contact', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
