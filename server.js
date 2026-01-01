@@ -53,10 +53,14 @@ const transporter = nodemailer.createTransport({
 
 // Contact form endpoint
 app.post('/api/contact', async (req, res) => {
+    console.log('=== Contact Form Request Received ===');
+    console.log('Request body:', req.body);
+    
     const { name, email, subject, message } = req.body;
 
     // Validation
     if (!name || !email || !subject || !message) {
+        console.log('Validation failed: Missing fields');
         return res.status(400).json({ 
             error: 'All fields are required' 
         });
@@ -65,10 +69,27 @@ app.post('/api/contact', async (req, res) => {
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+        console.log('Validation failed: Invalid email format');
         return res.status(400).json({ 
             error: 'Invalid email address' 
         });
     }
+
+    // Check environment variables
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        console.error('ERROR: Email credentials not configured!');
+        console.error('EMAIL_USER:', process.env.EMAIL_USER ? 'Set' : 'NOT SET');
+        console.error('EMAIL_PASS:', process.env.EMAIL_PASS ? 'Set' : 'NOT SET');
+        return res.status(500).json({ 
+            error: 'Email service not configured. Please contact the site administrator.' 
+        });
+    }
+
+    console.log('Validation passed. Attempting to send email...');
+    console.log('Email config:', {
+        user: process.env.EMAIL_USER,
+        passLength: process.env.EMAIL_PASS?.length || 0
+    });
 
     try {
         // Email to you (portfolio owner)
@@ -106,8 +127,13 @@ app.post('/api/contact', async (req, res) => {
         };
 
         // Send both emails
+        console.log('Sending email to owner...');
         await transporter.sendMail(mailOptionsToOwner);
+        console.log('✅ Email to owner sent successfully');
+        
+        console.log('Sending confirmation email to sender...');
         await transporter.sendMail(mailOptionsToSender);
+        console.log('✅ Confirmation email sent successfully');
 
         res.status(200).json({ 
             success: true, 
@@ -115,9 +141,15 @@ app.post('/api/contact', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error sending email:', error);
+        console.error('❌ Email sending failed:');
+        console.error('Error name:', error.name);
+        console.error('Error message:', error.message);
+        console.error('Error code:', error.code);
+        console.error('Full error:', error);
+        
         res.status(500).json({ 
-            error: 'Failed to send message. Please try again later.' 
+            error: 'Failed to send message. Please try again later.',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 });
@@ -143,11 +175,36 @@ app.get('/api/download-resume', (req, res) => {
     }
 });
 
+// Root endpoint - test if server is accessible
+app.get('/', (req, res) => {
+    res.send('Portfolio Backend Server is Running! ✅');
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
     res.status(200).json({ 
         status: 'Server is running',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        endpoints: {
+            contact: '/api/contact',
+            resume: '/api/download-resume',
+            health: '/api/health'
+        }
+    });
+});
+
+// 404 handler for debugging
+app.use((req, res) => {
+    console.log('404 Not Found:', req.method, req.url);
+    res.status(404).json({
+        error: 'Endpoint not found',
+        requestedUrl: req.url,
+        method: req.method,
+        availableEndpoints: {
+            contact: 'POST /api/contact',
+            resume: 'GET /api/download-resume',
+            health: 'GET /api/health'
+        }
     });
 });
 
