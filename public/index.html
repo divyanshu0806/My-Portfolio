@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio - Your Name</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">MyPortfolio</div>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul id="navMenu">
+                <li><a href="#home" onclick="closeMenu()">Home</a></li>
+                <li><a href="#about" onclick="closeMenu()">About</a></li>
+                <li><a href="#skills" onclick="closeMenu()">Skills</a></li>
+                <li><a href="#projects" onclick="closeMenu()">Projects</a></li>
+                <li><a href="#resume" onclick="closeMenu()">Resume</a></li>
+                <li><a href="#contact" onclick="closeMenu()">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Hi, I'm Divyanshu Thakur</h1>
+            <p>B.tech CSE Undergraduate | Full Stack Developer | Software Developer</p>
+
+            
+            <div class="social-links">
+    <a href="https://linkedin.com/in/divyanshu-thakur-74032b31a" target="_blank" title="LinkedIn">
+        <i class="fa-brands fa-linkedin-in"></i>
+    </a>
+
+    <a href="https://github.com/divyanshu0806" target="_blank" title="GitHub">
+        <i class="fa-brands fa-github"></i>
+    </a>
+     <a href="https://instagram.com/divyanshu_0806" target="_blank" title="Instagram">
+        <i class="fa-brands fa-instagram"></i>
+    </a>
+    <a href="https://x.com/divyanshu0806" target="_blank" title="X">
+        <i class="fa-brands fa-x-twitter"></i>
+    </a>
+
+    <a href="mailto:divyanshu.jam100@gmail.com" target="_blank" title="Email">
+        <i class="fa-solid fa-envelope"></i>
+    </a>
+        </div>
+
+            
+            <div>
+                <a href="#contact" class="btn">Get In Touch</a>
+                <a href="#projects" class="btn btn-outline">View Projects</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="divyanshu.jpg" alt="Profile">
+        </div>
+    </section>
+
+    <section id="about">
+        <h2>About Me</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p>
+                    I am a Computer Science and Engineering undergraduate currently pursuing my B.Tech,
+                    with a strong focus on software development and problem solving.
+                    I have a keen interest in full-stack web development and enjoy working with
+                    modern technologies to build efficient and scalable applications.
+                </p>
+                <p>
+                    My academic journey has helped me develop a solid foundation in programming,
+                    data structures, and web technologies.
+                    I believe in learning through hands-on projects and continuously improving my skills
+                    by exploring new tools, frameworks, and best practices in software engineering.
+                </p>
+                <p>
+                    I aim to grow as a software engineer by applying my technical knowledge
+                    to real-world problems and contributing to the development of reliable
+                    and user-centric software solutions.
+                </p>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Email</label>
+                        <span><a href="mailto:divyanshu.jam100@gmail.com">divyanshu.jam100@gmail.com</a></span>
+                    </div>
+                     <div class="info-item">
+                        <label>Phone</label>
+                        <span>
+                            <a href="#" id="phoneNumber">+91 9931574938</a>
+                        </span>
+                    </div>
+
+                    <div class="info-item">
+                        <label>Location</label>
+                        <span>Jalandhar,Punjab,India</span>
+                    </div>
+                    <div class="info-item">
+                        <label>LinkedIn</label>
+                        <span><a href="https://linkedin.com/in/divyanshu-thakur-74032b31a" target="_blank">linkedin.com/in/divyanshu-thakur-74032b31a</a></span>
+                    </div>
+                    <div class="info-item">
+                        <label>GitHub</label>
+                        <span><a href="https://github.com/divyanshu0806" target="_blank">github.com/divyanshu0806</a></span>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="about-image">
+                <img src="about.avif" alt="About Me" style="width: 100%; border-radius: 12px;">
+            </div>
+        </div>
+
+        <div class="education-card">
+            <h3>I.K.Gujral Punjab Technical Uinversity</h3>
+            <div class="degree">Bachelor of Technology in Computer Science and Engineering</div>
+            <div class="duration">July 2024 - June 2028</div>
+            <div class="description">
+                B.Tech student in Computer Science & Engineering, focused on web development and core software engineering concepts.
+                Experienced in programming, logical problem-solving, and building structured applications.
+                Continuously improving technical skills with hands-on projects and self-learning.
+            </div>
+        </div>
+    </section>
+
+    <section id="skills">
+        <h2>Skills & Expertise</h2>
+        <div class="skills-grid">
+            <div class="skill-card">
+                <h3>Frontend Development</h3>
+                <div class="skill-tags">
+                    <span class="tag">HTML5</span>
+                    <span class="tag">CSS3</span>
+                    <span class="tag">JavaScript</span>
+                    <span class="tag">React</span>
+                    <span class="tag">Bootstrap Framework</span>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h3>Backend Development</h3>
+                <div class="skill-tags">
+                    <span class="tag">Node.js</span>
+                    <span class="tag">Express.js</span>
+                    <span class="tag">REST APIs</span>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h3>Database</h3>
+                <div class="skill-tags">
+                    <span class="tag">MySQL</span>
+                    <span class="tag">MongoDB</span>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h3>Technical Skills</h3>
+                <div class="skill-tags">
+                    <span class="tag">DSA</span>
+                    <span class="tag">Object Oriented Programming</span>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h3>Programming Languages</h3>
+                <div class="skill-tags">
+                    <span class="tag">C</span>
+                    <span class="tag">C++</span>
+                    <span class="tag">Java</span>
+                    <span class="tag">Python</span>
+
+                </div>
+            </div>
+            <div class="skill-card">
+                <h3>Tools & Others</h3>
+                <div class="skill-tags">
+                    <span class="tag">Git</span>
+                    <span class="tag">Github</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects">
+        <h2>Featured Projects</h2>
+        <div class="projects-grid">
+            <div class="project-card">
+                <div class="project-image"><img src="image2.png" alt="Online Library Screenshot" style="max-width:100%; height:200px; object-fit: cover; border-radius:8px;"></div>
+                <div class="project-info">
+                  <h3>
+  <a href="https://divyanshu0806.github.io/Readify-Library/" target="_blank" style="text-decoration:none; color:inherit;">
+    Online Library System
+  </a>
+</h3>
+
+                    <p>An intuitive online platform where users can explore, borrow, and read a vast collection of books anytime, from anywhere, making learning and reading easier than ever.</p>
+                    <div class="skill-tags">
+                        <span class="tag">HTML</span>
+                        <span class="tag">CSS</span>
+                        <span class="tag">Vanilla JavaScript</span>
+                        <span class="tag">Node.js</span>
+                        <span class="tag">Express.js</span>
+                        <span class="tag">MySQL</span>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="project-image"><img src="image.png" alt="Amazon Clone Screenshot" style="max-width:100%; height:200px; object-fit: cover; border-radius:8px;"></div>
+                <div class="project-info">
+                    <h3><a href="https://divyanshu0806.github.io/amazon_clone/" target="_blank" style="text-decoration:none; color:inherit;">Amazon Clone</a></h3>
+                    <p>An Amazon-inspired web page built with HTML and CSS, replicating the look and feel of the e-commerce platform.</p>
+                    <div class="skill-tags">
+                        <span class="tag">HTML</span>
+                        <span class="tag">CSS</span>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="project-image"><img src="image3.png" alt="PDF Merger Screenshot" style="max-width:100%; height:200px; object-fit: cover; border-radius:8px;"></div>
+                <div class="project-info">
+                    <h3><a href="https://pdfmerger-evyf.onrender.com/" target="_blank" style="text-decoration:none; color:inherit;">PDF Merger</a></h3>
+                    <p>A simple web tool that quickly merges multiple PDF files into a single downloadable document.</p>
+                    <div class="skill-tags">
+                        <span class="tag">HTML</span>
+                        <span class="tag">Node.js</span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <section id="resume">
+        <h2>Resume</h2>
+        <div class="resume-content">
+            <p>Download my resume to learn more about my experience, education, and accomplishments.</p>
+            <a href="/api/download-resume" class="btn" download>Download Resume (PDF)</a>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>Get In Touch</h2>
+        
+        <div class="contact-info">
+            <div class="contact-card">
+                <div class="icon">✉</div>
+                <h3>Email</h3>
+                <a href="https://divyanshu.jam100@gmail.com" target="_blank">divyanshu.jam100@gmail.com </a>
+            </div>
+            <div class="contact-card">
+                <div class="icon">📱</div>
+                <h3>Phone</h3>
+                <a href="tel:+91 9931574938">+91 9931574938</a>
+            </div>
+            <div class="contact-card">
+                <div class="icon">in</div>
+                <h3>LinkedIn</h3>
+                <a href="https://linkedin.com/in/divyanshu-thakur-74032b31a" target="_blank">Connect with me</a>
+            </div>
+        </div>
+
+        <div class="contact-form">
+            <div id="successMessage" class="success-message">Thank you! Your message has been sent successfully.</div>
+            <div id="errorMessage" class="error-message">Oops! Something went wrong. Please try again.</div>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                <button type="submit" class="btn">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Divyanshu Thakur. All rights reserved.</p>
+    </footer>
+
+    
+    <script src="script.js"></script>
+</body>
+</html>
