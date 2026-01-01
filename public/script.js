@@ -1,99 +1,106 @@
-
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-
-        // Mobile menu toggle
-        function toggleMenu() {
-            const navMenu = document.getElementById('navMenu');
-            navMenu.classList.toggle('active');
-        }
-
-        function closeMenu() {
-            const navMenu = document.getElementById('navMenu');
-            navMenu.classList.remove('active');
-        }
-
-        // Contact form submission
-        document.getElementById('contactForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                subject: document.getElementById('subject').value,
-                message: document.getElementById('message').value
-            };
-
-            try {
-                const response = await fetch('http://localhost:5000/api/contact', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    document.getElementById('successMessage').style.display = 'block';
-                    document.getElementById('errorMessage').style.display = 'none';
-                    document.getElementById('contactForm').reset();
-                    
-                    setTimeout(() => {
-                        document.getElementById('successMessage').style.display = 'none';
-                    }, 5000);
-                } else {
-                    throw new Error(data.error || 'Failed to send message');
-                }
-            } catch (error) {
-                document.getElementById('errorMessage').style.display = 'block';
-                document.getElementById('errorMessage').textContent = error.message;
-                document.getElementById('successMessage').style.display = 'none';
-                
-                setTimeout(() => {
-                    document.getElementById('errorMessage').style.display = 'none';
-                }, 5000);
-            }
-        });
-    const phone = document.getElementById("phoneNumber");
-
-    phone.addEventListener("click", (e) => {
+// Smooth scrolling
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
         e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+});
 
-        const confirmCopy = confirm("Copy phone number to clipboard?");
+// Mobile menu toggle
+function toggleMenu() {
+    const navMenu = document.getElementById('navMenu');
+    navMenu.classList.toggle('active');
+}
 
-        if (confirmCopy) {
-            navigator.clipboard.writeText("+919931574938");
-            alert("Phone number copied!");
+function closeMenu() {
+    const navMenu = document.getElementById('navMenu');
+    navMenu.classList.remove('active');
+}
+
+// Contact form submission
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        subject: document.getElementById('subject').value,
+        message: document.getElementById('message').value
+    };
+
+    try {
+        // ✅ CHANGED: Using relative URL since frontend and backend are on same domain
+        const response = await fetch('/api/contact', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('contactForm').reset();
+            
+            setTimeout(() => {
+                document.getElementById('successMessage').style.display = 'none';
+            }, 5000);
+        } else {
+            throw new Error(data.error || 'Failed to send message');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('errorMessage').style.display = 'block';
+        document.getElementById('errorMessage').textContent = 'Failed to send message. Please try again.';
+        document.getElementById('successMessage').style.display = 'none';
+        
+        setTimeout(() => {
+            document.getElementById('errorMessage').style.display = 'none';
+        }, 5000);
+    }
+});
+
+const phone = document.getElementById("phoneNumber");
+
+phone.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    const confirmCopy = confirm("Copy phone number to clipboard?");
+
+    if (confirmCopy) {
+        navigator.clipboard.writeText("+919931574938");
+        alert("Phone number copied!");
+    }
+});
+
+// Active nav link on scroll
+window.addEventListener('scroll', () => {
+    let current = '';
+    const sections = document.querySelectorAll('section');
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (scrollY >= sectionTop - 200) {
+            current = section.getAttribute('id');
         }
     });
 
-        // Active nav link on scroll
-        window.addEventListener('scroll', () => {
-            let current = '';
-            const sections = document.querySelectorAll('section');
-            
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (scrollY >= sectionTop - 200) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            document.querySelectorAll('nav a').forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').slice(1) === current) {
-                    link.classList.add('active');
-                }
-            });
-        });
+    document.querySelectorAll('nav a').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href').slice(1) === current) {
+            link.classList.add('active');
+        }
+    });
+});
