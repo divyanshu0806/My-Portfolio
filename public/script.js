@@ -22,7 +22,6 @@
         }
 
         // Contact form submission
-       / Contact form submission
 document.getElementById('contactForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
