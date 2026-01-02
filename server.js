@@ -17,14 +17,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 // Brevo (Sendinblue) SMTP Configuration
+// Using port 2525 as Railway often blocks 587
 const transporter = nodemailer.createTransport({
     host: 'smtp-relay.brevo.com',
-    port: 587,
-    secure: false, // Use TLS
+    port: 2525, // Alternative port for Railway
+    secure: false,
     auth: {
-        user: process.env.BREVO_SMTP_USER,  // Your Brevo login email
-        pass: process.env.BREVO_SMTP_KEY    // Your Brevo SMTP key
-    }
+        user: process.env.BREVO_SMTP_USER,
+        pass: process.env.BREVO_SMTP_KEY
+    },
+    tls: {
+        rejectUnauthorized: false // Allow self-signed certificates
+    },
+    connectionTimeout: 10000, // 10 seconds
+    greetingTimeout: 10000
 });
 
 // Verify transporter configuration
