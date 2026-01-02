@@ -32,18 +32,14 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
     };
 
     try {
-        // ✅ CHANGED: Using relative URL since frontend and backend are on same domain
-        const response = await fetch(
-  'https://my-portfolio-production-5ad8.up.railway.app/api/contact',
-  {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(formData)
-  }
-);
-
+        // ✅ Using relative URL - cleaner and works on any domain
+        const response = await fetch('/api/contact', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

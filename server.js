@@ -16,17 +16,25 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static frontend
 app.use(express.static('public'));
 
-// Nodemailer transporter (secure for production)
+// Brevo (Sendinblue) SMTP Configuration
 const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    secure: false,
+    host: 'smtp-relay.brevo.com',
+    port: 587,
+    secure: false, // Use TLS
     auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
+        user: process.env.BREVO_SMTP_USER,  // Your Brevo login email
+        pass: process.env.BREVO_SMTP_KEY    // Your Brevo SMTP key
     }
 });
 
+// Verify transporter configuration
+transporter.verify(function(error, success) {
+    if (error) {
+        console.error('❌ SMTP configuration error:', error);
+    } else {
+        console.log('✅ Server is ready to send emails');
+    }
+});
 
 // Contact form endpoint
 app.post('/api/contact', async (req, res) => {
@@ -35,6 +43,7 @@ app.post('/api/contact', async (req, res) => {
 
     const { name, email, subject, message } = req.body;
 
+    // Validation
     if (!name || !email || !subject || !message) {
         console.log('Validation failed: Missing fields');
         return res.status(400).json({ error: 'All fields are required' });
@@ -46,18 +55,23 @@ app.post('/api/contact', async (req, res) => {
         return res.status(400).json({ error: 'Invalid email address' });
     }
 
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-        console.error('ERROR: Email credentials missing!');
+    // Check environment variables
+    if (!process.env.BREVO_SMTP_USER || !process.env.BREVO_SMTP_KEY) {
+        console.error('ERROR: Brevo SMTP credentials missing!');
+        console.error('BREVO_SMTP_USER:', process.env.BREVO_SMTP_USER ? 'Set' : 'NOT SET');
+        console.error('BREVO_SMTP_KEY:', process.env.BREVO_SMTP_KEY ? 'Set' : 'NOT SET');
         return res.status(500).json({ error: 'Email service not configured.' });
     }
 
     try {
-        // Email to portfolio owner
-        const VERIFIED_SENDER = 'divyanshu.jam100@gmail.com';
+        // IMPORTANT: Use the email you verified in Brevo
+        const VERIFIED_SENDER = process.env.BREVO_SMTP_USER; // Must be verified in Brevo
 
+        // Email to you (portfolio owner)
         const mailOptionsToOwner = {
-            from: `"DIVYANSHU THAKUR" <${VERIFIED_SENDER}>`,
-            to: VERIFIED_SENDER,
+            from: `"Portfolio Contact Form" <${VERIFIED_SENDER}>`,
+            to: 'divyanshu.jam100@gmail.com',
+            replyTo: email, // So you can reply directly to the sender
             subject: `New Portfolio Message: ${subject}`,
             html: `
                 <h2>New Contact Form Submission</h2>
@@ -66,53 +80,64 @@ app.post('/api/contact', async (req, res) => {
                 <p><strong>Subject:</strong> ${subject}</p>
                 <p><strong>Message:</strong></p>
                 <p>${message}</p>
+                <hr>
+                <p><em>Reply to this email to respond to ${name} at ${email}</em></p>
             `
         };
 
         // Confirmation email to sender
         const mailOptionsToSender = {
-        from: `"DIVYANSHU THAKUR" <${VERIFIED_SENDER}>`,
-        to: email,
-        subject: 'Thank you for reaching out!',
-        html: `
-            <p>Hi ${name},</p>
+            from: `"Divyanshu Thakur" <${VERIFIED_SENDER}>`,
+            to: email,
+            subject: 'Thank you for reaching out!',
+            html: `
+                <p>Hi ${name},</p>
+                <p>Thank you for contacting me through my portfolio website!</p>
+                <p>I've received your message and will get back to you as soon as possible.</p>
+                <p><strong>Your message:</strong></p>
+                <p>${message}</p>
+                <br>
+                <p>Best regards,</p>
+                <p><strong>Divyanshu Thakur</strong></p>
+            `
+        };
 
-            <p>I've received your message and will get back to you as soon as possible.</p>
+        // Send emails
+        let ownerEmailSent = false;
+        let senderEmailSent = false;
 
-            <p><strong>Your message:</strong></p>
-            <p>${message}</p>
-
-            <br>
-            <p>Best regards,</p>
-            <p><strong>Divyanshu Thakur</strong></p>
-        `
-    };
-
-        // Send emails but catch individual errors
         try {
             await transporter.sendMail(mailOptionsToOwner);
             console.log('✅ Email to owner sent successfully');
+            ownerEmailSent = true;
         } catch (errOwner) {
             console.error('❌ Failed to send email to owner:', errOwner.message);
+            console.error('Full error:', errOwner);
         }
 
         try {
             await transporter.sendMail(mailOptionsToSender);
             console.log('✅ Confirmation email sent to sender');
+            senderEmailSent = true;
         } catch (errSender) {
             console.error('❌ Failed to send confirmation email:', errSender.message);
+            console.error('Full error:', errSender);
         }
 
-        // Always respond success to frontend
-        res.status(200).json({
-            success: true,
-            message: 'Message received! We will get back to you soon.'
-        });
+        // Respond based on results
+        if (ownerEmailSent || senderEmailSent) {
+            res.status(200).json({
+                success: true,
+                message: 'Message sent successfully! I will get back to you soon.'
+            });
+        } else {
+            throw new Error('Failed to send emails');
+        }
 
     } catch (error) {
-        console.error('Unexpected error:', error);
+        console.error('❌ Unexpected error:', error);
         res.status(500).json({
-            error: 'Something went wrong. Please try again later.',
+            error: 'Failed to send message. Please try again or email me directly.',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
@@ -131,12 +156,24 @@ app.get('/api/download-resume', (req, res) => {
 });
 
 // Root endpoint
-app.get('/', (req, res) => res.send('Portfolio Backend Server is Running! ✅'));
+app.get('/', (req, res) => {
+    res.send('Portfolio Backend Server is Running! ✅');
+});
 
 // Health check
 app.get('/api/health', (req, res) => {
-    res.status(200).json({ status: 'Server is running', timestamp: new Date().toISOString() });
+    res.status(200).json({ 
+        status: 'Server is running', 
+        timestamp: new Date().toISOString(),
+        smtp: {
+            configured: !!(process.env.BREVO_SMTP_USER && process.env.BREVO_SMTP_KEY)
+        }
+    });
 });
 
 // Start server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📧 SMTP User: ${process.env.BREVO_SMTP_USER || 'NOT SET'}`);
+    console.log(`🔑 SMTP Key: ${process.env.BREVO_SMTP_KEY ? 'SET' : 'NOT SET'}`);
+});
